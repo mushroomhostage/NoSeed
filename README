@@ -1,21 +1,5 @@
-package me.exphc.GetLost;
-
-import java.util.logging.Logger;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.io.DataOutputStream;
-
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.*;
-
-import net.minecraft.server.Packet1Login;
-
-public class GetLost extends JavaPlugin {
-    Logger log = Logger.getLogger("Minecraft");
-
-    public void onEnable() {
-        /*
-
+Notes:        
+        
         http://wiki.vg/Protocol
 
         Packet 0x01 - Login Request - Server to Client - Map Seed
@@ -35,28 +19,3 @@ src/minecraft_server/net/minecraft/src/ServerConfigurationManager.java
             this.c = j; // map seed
 
         written out in a(DataOutputStream dataoutputstream)
-*/
-
-        Class argTypes[] = new Class[1];
-        argTypes[0] = DataOutputStream.class;
-
-        Method method = null;
-
-        try {
-            method = Packet1Login.class.getMethod("a", argTypes);
-        } catch (NoSuchMethodException e) {
-            log.severe("Failed to find Packet1Login a(DataOutputStream) method: " + e);
-        }
-
-        log.info("Found method: "+method);
-        
-        // TODO: change, replacing c
-
-
-        log.info("GetLost enabled");
-    }
-
-    public void onDisable() {
-        log.info("GetLost disabled");
-    }
-}

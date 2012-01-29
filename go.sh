@@ -1,5 +1,5 @@
 #!/bin/sh -x
-#CLASSPATH=../craftbukkit-1.1-R2.jar javac *.java -Xlint:deprecation -Xlint:unchecked
+#CLASSPATH=../craftbukkit-1.1-R2.jar javac GetLost.java -Xlint:deprecation -Xlint:unchecked
 javac GetLostLoader.java
 rm -rf me
 mkdir -p me/exphc/GetLost
