@@ -4,5 +4,6 @@ javac LostLoader.java
 rm -rf me
 mkdir -p me/exphc/Lost
 mv *.class me/exphc/Lost/
-jar cvMf Lost.jar me/ *.yml META-INF
+cp ../dev/CraftBukkit/target/classes/net/minecraft/server/Packet1Login.class .
+jar cvMf Lost.jar me/ *.yml META-INF Packet1Login.class
 #cp Lost.jar ../plugins/
