@@ -5,6 +5,7 @@ import java.lang.instrument.*;
 import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.io.*;
 
 // Replace classes
@@ -19,9 +20,9 @@ class GetLostClassReplacer implements ClassFileTransformer {
     }
 
     public byte[] transform(ClassLoader loader, String className, Class redefininingClass, ProtectionDomain domain, byte[] bytes) {
-        System.out.println("Transformer: " + className);
 
         if (replacements.containsKey(className)) {
+            GetLostLoader.log("Transforming " + className);
             return replacements.get(className);
         } else {
             return bytes;
@@ -30,6 +31,8 @@ class GetLostClassReplacer implements ClassFileTransformer {
 }
 
 public class GetLostLoader {
+    static Logger log = Logger.getLogger("GetLostLoader");
+
     private static byte[] slurp(String filename) {
         byte[] bytes;
 
@@ -56,12 +59,16 @@ public class GetLostLoader {
         return bytes;
     }
 
+    public static void log(String message) {
+        log.info("[GetLostLoader] " + message);
+    }
+
     public static void premain(String args, Instrumentation inst) {
         Map<String, byte[]> map = new HashMap<String, byte[]>();
 
-        System.out.println("Reading class");
+        log("Reading class");
         map.put("net/minecraft/server/Packet1Login", slurp("GetLost-dev/Packet1Login.class"));
-        System.out.println("Adding transformer");
+        log("Adding transformer");
 
         inst.addTransformer(new GetLostClassReplacer(map)); 
     }
