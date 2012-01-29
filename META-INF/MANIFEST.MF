@@ -1,2 +1,3 @@
-Mainfest-version: 1.0
-Premain-Class: com.exphc.Lost.LostLoader
+Mainfest-Version: 1.0
+Premain-Class: me.exphc.Lost.LostLoader
+
