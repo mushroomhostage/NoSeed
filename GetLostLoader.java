@@ -3,26 +3,29 @@ package me.exphc.GetLost;
 
 import java.lang.instrument.*;
 import java.security.ProtectionDomain;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.io.*;
 
-class Transformer implements ClassFileTransformer {
+// Replace classes
+class GetLostClassReplacer implements ClassFileTransformer {
+    Map<String, byte[]> replacements;
+
     byte[] newBytes;
 
-    public Transformer(byte[] nb) {
-        super();
+    public GetLostClassReplacer(Map<String, byte[]> r) {
+        replacements = r;
 
-        newBytes = nb;
     }
 
     public byte[] transform(ClassLoader loader, String className, Class redefininingClass, ProtectionDomain domain, byte[] bytes) {
         System.out.println("Transformer: " + className);
 
-        if (!className.equals("net/minecraft/server/Packet1Login")) {
+        if (replacements.containsKey(className)) {
+            return replacements.get(className);
+        } else {
             return bytes;
         }
-
-        return newBytes;
     }
 }
 
@@ -54,12 +57,13 @@ public class GetLostLoader {
     }
 
     public static void premain(String args, Instrumentation inst) {
+        Map<String, byte[]> map = new HashMap<String, byte[]>();
+
         System.out.println("Reading class");
-        byte[] data = slurp("GetLost-dev/Packet1Login.class"); // TODO: relative paths
+        map.put("net/minecraft/server/Packet1Login", slurp("GetLost-dev/Packet1Login.class"));
         System.out.println("Adding transformer");
 
-        // see http://www.javalobby.org/java/forums/t19309.html
-        inst.addTransformer(new Transformer(data)); 
+        inst.addTransformer(new GetLostClassReplacer(map)); 
     }
 }
 
