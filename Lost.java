@@ -10,7 +10,6 @@ import org.bukkit.*;
 
 import net.minecraft.server.Packet1Login;
 
-
 public class Lost extends JavaPlugin {
     Logger log = Logger.getLogger("Minecraft");
 
