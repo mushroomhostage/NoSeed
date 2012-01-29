@@ -4,5 +4,5 @@ javac LostLoader.java
 rm -rf me
 mkdir -p me/exphc/Lost
 mv *.class me/exphc/Lost/
-jar cf Lost.jar me/ *.yml META-INF
+jar cvMf Lost.jar me/ *.yml META-INF
 #cp Lost.jar ../plugins/

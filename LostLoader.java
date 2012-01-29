@@ -1,5 +1,5 @@
 
-package com.exphc.Lost;
+package me.exphc.Lost;
 
 import java.lang.instrument.*;
 import java.security.ProtectionDomain;
