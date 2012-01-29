@@ -1,5 +1,5 @@
 
-package me.exphc.Lost;
+package me.exphc.GetLost;
 
 import java.lang.instrument.*;
 import java.security.ProtectionDomain;
@@ -26,7 +26,7 @@ class Transformer implements ClassFileTransformer {
     }
 }
 
-public class LostLoader {
+public class GetLostLoader {
     private static byte[] slurp(String filename) {
         byte[] bytes;
 
@@ -55,7 +55,7 @@ public class LostLoader {
 
     public static void premain(String args, Instrumentation inst) {
         System.out.println("Reading class");
-        byte[] data = slurp("Lost-dev/Packet1Login.class"); // TODO: relative paths
+        byte[] data = slurp("GetLost-dev/Packet1Login.class"); // TODO: relative paths
         System.out.println("Adding transformer");
 
         // see http://www.javalobby.org/java/forums/t19309.html

@@ -1,4 +1,4 @@
-package me.exphc.Lost;
+package me.exphc.GetLost;
 
 import java.util.logging.Logger;
 import java.lang.reflect.Field;
@@ -10,7 +10,7 @@ import org.bukkit.*;
 
 import net.minecraft.server.Packet1Login;
 
-public class Lost extends JavaPlugin {
+public class GetLost extends JavaPlugin {
     Logger log = Logger.getLogger("Minecraft");
 
     public void onEnable() {
@@ -53,10 +53,10 @@ src/minecraft_server/net/minecraft/src/ServerConfigurationManager.java
         // TODO: change, replacing c
 
 
-        log.info("Lost enabled");
+        log.info("GetLost enabled");
     }
 
     public void onDisable() {
-        log.info("Lost disabled");
+        log.info("GetLost disabled");
     }
 }
