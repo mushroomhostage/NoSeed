@@ -6,7 +6,10 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.lang.reflect.Field;
 import java.io.*;
+
+import net.minecraft.server.Packet1Login;
 
 // Replace classes
 class GetLostClassReplacer implements ClassFileTransformer {
@@ -31,8 +34,6 @@ class GetLostClassReplacer implements ClassFileTransformer {
 }
 
 public class GetLostLoader {
-    static Logger log = Logger.getLogger("GetLostLoader");
-
     private static byte[] slurp(String filename) {
         byte[] bytes;
 
@@ -60,17 +61,33 @@ public class GetLostLoader {
     }
 
     public static void log(String message) {
-        log.info("[GetLostLoader] " + message);
+        System.out.println("[GetLostLoader] " + message);
     }
 
     public static void premain(String args, Instrumentation inst) {
         Map<String, byte[]> map = new HashMap<String, byte[]>();
 
-        log("Reading class");
+        log("Loading class replacements");
         map.put("net/minecraft/server/Packet1Login", slurp("GetLost-dev/Packet1Login.class"));
         log("Adding transformer");
 
         inst.addTransformer(new GetLostClassReplacer(map)); 
+        // From now on, all classes loaded will pass through the transformer
+    
+
+        // Use reflection to change the static 'fakeSeed' variable
+        Field fakeSeed;
+        try {
+            fakeSeed = net.minecraft.server.Packet1Login.class.getDeclaredField("fakeSeed");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Class transformation failed! Could not find fakeSeed: " + e.getMessage());
+        }
+        fakeSeed.setAccessible(true);
+        try {
+            fakeSeed.setLong(null, 999);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to change fakeSeed: " + e.getMessage());
+        }
     }
 }
 
