@@ -84,7 +84,8 @@ public class GetLostLoader {
         }
         fakeSeed.setAccessible(true);
         try {
-            fakeSeed.setLong(null, 999);
+            long n = Long.parseLong(args);
+            fakeSeed.setLong(null, n);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to change fakeSeed: " + e.getMessage());
         }
