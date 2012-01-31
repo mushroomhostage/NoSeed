@@ -1,2 +1,2 @@
 Mainfest-Version: 1.0
-Premain-Class: me.exphc.GetLost.GetLostLoader
+Premain-Class: me.exphc.NoSeed.NoSeedLoader
