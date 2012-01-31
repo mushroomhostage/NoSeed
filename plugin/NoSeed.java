@@ -10,6 +10,8 @@ import java.io.*;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
+import org.bukkit.configuration.*;
+import org.bukkit.configuration.file.*;
 import org.bukkit.command.*;
 import org.bukkit.*;
 
@@ -33,11 +35,14 @@ public class NoSeed extends JavaPlugin {
         lastRealSeedField.setAccessible(true);
         forceFlatField.setAccessible(true);
 
-        try {
-            // TODO: load from config!
+        getConfig().options().copyDefaults(true);
+        saveConfig();
 
-            long n = Long.parseLong("456");
-            fakeSeedField.setLong(null, n);
+        try {
+            // Load from config
+            fakeSeedField.setLong(null, getConfig().getLong("fakeSeed", 42));
+            forceFlatField.setBoolean(null, getConfig().getBoolean("forceFlat", true));
+
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to change fakeSeed: " + e.getMessage());
         }
@@ -51,7 +56,6 @@ public class NoSeed extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        // TODO: permissions
         if (!cmd.getName().equalsIgnoreCase("seed")) {
             return false;
         }
@@ -75,7 +79,8 @@ public class NoSeed extends JavaPlugin {
                     boolean forceFlat = forceFlatField.getBoolean(null);
                     forceFlat = !forceFlat;
                     forceFlatField.setBoolean(null, forceFlat);
-                    sender.sendMessage("Toggling SUPERFLAT to "+forceFlat);
+                    getConfig().set("forceFlat", forceFlat);
+                    sender.sendMessage("Toggled forceFlat to "+forceFlat);
                 } catch (Exception e) {
                     sender.sendMessage("Failed to toggle: " + e.getMessage());
                 }
@@ -99,11 +104,17 @@ public class NoSeed extends JavaPlugin {
         try {
             long fakeSeed = fakeSeedField.getLong(null);
             sender.sendMessage("Fake seed: " + fakeSeed);
+            getConfig().set("fakeSeed", fakeSeed);
+
             long lastRealSeed = lastRealSeedField.getLong(null);
             sender.sendMessage("Real seed (last used): " + lastRealSeed);
+            getConfig().set("lastRealSeed (read only)", lastRealSeed);
+
         } catch (Exception e) {
             sender.sendMessage("Failed to get: " + e.getMessage());
         }
+
+        saveConfig();
 
         return true;
     }
