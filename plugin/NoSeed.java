@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.io.*;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
 import org.bukkit.command.*;
 import org.bukkit.*;
 
@@ -33,6 +34,8 @@ public class NoSeed extends JavaPlugin {
         forceFlatField.setAccessible(true);
 
         try {
+            // TODO: load from config!
+
             long n = Long.parseLong("456");
             fakeSeedField.setLong(null, n);
         } catch (Exception e) {
@@ -52,9 +55,21 @@ public class NoSeed extends JavaPlugin {
         if (!cmd.getName().equalsIgnoreCase("seed")) {
             return false;
         }
+
+        Player player;
+        if (sender instanceof Player) {
+            player = (Player)sender;
+        } else {
+            player = null;
+        }
        
         // Set
         if (args.length > 0) {
+            if (player != null && !player.hasPermission("noseed.set")) {
+                sender.sendMessage("You do not have permission to set the fake seed");
+                return true;
+            }
+
             if (args[0].equalsIgnoreCase("flat")) {
                 try {
                     boolean forceFlat = forceFlatField.getBoolean(null);
@@ -73,6 +88,11 @@ public class NoSeed extends JavaPlugin {
                     sender.sendMessage("Failed to set: " + e.getMessage());
                 }
             }
+        }
+
+        if (player != null && !player.hasPermission("noseed.get")) {
+            sender.sendMessage("You do not have permission to get the real seed");
+            return true;
         }
 
         // Get

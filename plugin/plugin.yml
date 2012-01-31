@@ -5,3 +5,15 @@ commands:
     seed:
         description: Change or view fake seed
         usage: /seed [fake-seed]
+permissions:
+    noseed.*:
+        children: 
+            noseed.change: true
+            noseed.view: true
+        default: false
+    noseed.set: 
+        description: Allows you to change the fake seed
+        default: op
+    noseed.get:
+        description: Allows you to view the real seed
+        default: op
