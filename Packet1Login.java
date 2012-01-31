@@ -15,8 +15,10 @@ public class Packet1Login extends Packet {
     public byte g;
     public byte h;
     public byte i;
-    //XXX[GetLostLoader]
+    //XXX[NoSeed]
     public static long fakeSeed = 42;
+    public static long lastRealSeed = -1;
+    public static boolean forceFlat = false;
 
     public Packet1Login() {}
 
@@ -54,15 +56,20 @@ public class Packet1Login extends Packet {
     public void a(DataOutputStream dataoutputstream) throws IOException { // CraftBukkit
         dataoutputstream.writeInt(this.a);
         a(this.name, dataoutputstream);
-        //XXX[GetLostLoader]
+        //XXX[NoSeed]
         //dataoutputstream.writeLong(this.c);
+        lastRealSeed = this.c;
         dataoutputstream.writeLong(fakeSeed);
 
+        //XXX[NoSeed]
+        /*
         if (this.d == null) {
             a("", dataoutputstream);
         } else {
             a(this.d.name(), dataoutputstream);
-        }
+        }*/
+        a(forceFlat ? "FLAT" : (this.d != null ? this.d.name() : ""), dataoutputstream);
+
 
         dataoutputstream.writeInt(this.e);
         dataoutputstream.writeByte(this.f);

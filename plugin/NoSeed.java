@@ -16,15 +16,22 @@ public class NoSeed extends JavaPlugin {
     Logger log = Logger.getLogger("Minecraft");
 
     Field fakeSeedField;
+    Field lastRealSeedField;
+    Field forceFlatField;
 
     public void onEnable() {
         // Use reflection to change the static 'fakeSeed' variable
         try {
             fakeSeedField = net.minecraft.server.Packet1Login.class.getDeclaredField("fakeSeed");
+            lastRealSeedField = net.minecraft.server.Packet1Login.class.getDeclaredField("lastRealSeed");
+            forceFlatField = net.minecraft.server.Packet1Login.class.getDeclaredField("forceFlat");
         } catch (Exception e) {
-            throw new IllegalArgumentException("Class transformation failed! Could not find fakeSeed: " + e.getMessage());
+            throw new IllegalArgumentException("NoSeed is not properly installed! Are you running CraftBukkit under ModInstrument?" + e.getMessage());
         }
         fakeSeedField.setAccessible(true);
+        lastRealSeedField.setAccessible(true);
+        forceFlatField.setAccessible(true);
+
         try {
             long n = Long.parseLong("456");
             fakeSeedField.setLong(null, n);
@@ -45,20 +52,35 @@ public class NoSeed extends JavaPlugin {
         if (!cmd.getName().equalsIgnoreCase("seed")) {
             return false;
         }
-        
+       
+        // Set
         if (args.length > 0) {
-            long newSeed = Long.parseLong(args[0]);
+            if (args[0].equalsIgnoreCase("flat")) {
+                try {
+                    boolean forceFlat = forceFlatField.getBoolean(null);
+                    forceFlat = !forceFlat;
+                    forceFlatField.setBoolean(null, forceFlat);
+                    sender.sendMessage("Toggling SUPERFLAT to "+forceFlat);
+                } catch (Exception e) {
+                    sender.sendMessage("Failed to toggle: " + e.getMessage());
+                }
+            } else {
+                long newSeed = Long.parseLong(args[0]);
 
-            try {
-                fakeSeedField.setLong(null, newSeed);
-            } catch (Exception e) {
-                sender.sendMessage("Failed to set: " + e.getMessage());
+                try {
+                    fakeSeedField.setLong(null, newSeed);
+                } catch (Exception e) {
+                    sender.sendMessage("Failed to set: " + e.getMessage());
+                }
             }
         }
 
+        // Get
         try {
             long fakeSeed = fakeSeedField.getLong(null);
             sender.sendMessage("Fake seed: " + fakeSeed);
+            long lastRealSeed = lastRealSeedField.getLong(null);
+            sender.sendMessage("Real seed (last used): " + lastRealSeed);
         } catch (Exception e) {
             sender.sendMessage("Failed to get: " + e.getMessage());
         }
