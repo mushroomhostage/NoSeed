@@ -5,5 +5,5 @@ mkdir -p me/exphc/NoSeed
 mv *.class me/exphc/NoSeed
 cp ../Packet1Login.class Packet1Login.class.noseed
 cp ../Packet1Login.java Packet1Login.java.noseed
-jar cvMf NoSeed.jar me/ *.yml *.java META-INF Packet1Login.*.noseed
+jar cvMf NoSeed.jar me/ *.yml *.java META-INF Packet1Login.*.noseed README ChangeLog
 cp NoSeed.jar ../../plugins/
