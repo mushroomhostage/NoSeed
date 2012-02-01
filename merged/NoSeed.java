@@ -164,26 +164,30 @@ public class NoSeed extends JavaPlugin {
 
         log("Initializing");
 
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("Packet1Login.class.noseed");
-        int LENGTH = 2705;
-        byte[] data = new byte[LENGTH];
-        try {
-            int read = stream.read(data, 0, LENGTH);
-            if (read != LENGTH) {
-                log("Failed to read class file! Read "+read+" bytes, expected "+LENGTH);
-                System.exit(-1);
-            }
-        } catch (IOException e) {
-            log("Failed to read class file! Exception: " + e.getMessage());
-        }
-
-        bytecodeMap.put("net/minecraft/server/Packet1Login", data);
+        bytecodeMap.put("net/minecraft/server/Packet1Login", readResource("Packet1Login.class.noseed", 2705));
+        bytecodeMap.put("net/minecraft/server/ServerConfigurationManager", readResource("ServerConfigurationManager.class.noseed", 23512));
 
         log("Adding transformer");
 
         inst.addTransformer(new NoSeedTransformer()); 
         // And so it begins!
         // From now on, all classes loaded will pass through the transformer
+    }
+
+    private static byte[] readResource(String name, int length) {
+        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+        byte[] data = new byte[length];
+        try {
+            int read = stream.read(data, 0, length);
+            if (read != length) {
+                log("Failed to read class file ("+name+")! Read "+read+" bytes, expected "+length);
+                System.exit(-1);
+            }
+        } catch (IOException e) {
+            log("Failed to read class file! Exception: " + e.getMessage());
+        }
+
+        return data;
     }
 }
 
