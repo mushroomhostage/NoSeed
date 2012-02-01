@@ -5,6 +5,7 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.Random;
 import java.lang.reflect.Field;
 import java.io.*;
 
@@ -14,6 +15,7 @@ import org.bukkit.configuration.*;
 import org.bukkit.configuration.file.*;
 import org.bukkit.command.*;
 import org.bukkit.*;
+
 
 public class NoSeed extends JavaPlugin {
     Logger log = Logger.getLogger("Minecraft");
@@ -29,7 +31,14 @@ public class NoSeed extends JavaPlugin {
             lastRealSeedField = net.minecraft.server.Packet1Login.class.getDeclaredField("lastRealSeed");
             forceFlatField = net.minecraft.server.Packet1Login.class.getDeclaredField("forceFlat");
         } catch (Exception e) {
-            throw new IllegalArgumentException("NoSeed is not properly installed! Are you running CraftBukkit with -javaagent:plugins/NoSeed.jar?" + e.getMessage());
+            log.severe("Exception: " + e);
+            log.severe("NoSeed is not properly installed! Are you using the latest version and running CraftBukkit with -javaagent:plugins/NoSeed.jar?");
+
+            // Make it apparent
+            //System.exit(-1);
+
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         fakeSeedField.setAccessible(true);
         lastRealSeedField.setAccessible(true);
@@ -38,13 +47,25 @@ public class NoSeed extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
 
+        // Pick a random default seed, but make it somewhat recognizable for ease of identification
+        Random random = new Random();
+        long defaultSeed = random.nextLong();
+        defaultSeed /= 10000;
+        defaultSeed *= 10000;
+        defaultSeed = Math.abs(defaultSeed);
+        defaultSeed +=  1111;
+
         try {
+
             // Load from config
-            fakeSeedField.setLong(null, getConfig().getLong("fakeSeed", 42));
+            fakeSeedField.setLong(null, getConfig().getLong("fakeSeed", defaultSeed));
             forceFlatField.setBoolean(null, getConfig().getBoolean("forceFlat", true));
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to change fakeSeed: " + e.getMessage());
+            log.severe("Exception: " + e);
+            log.severe("NoSeed failed to change fakeSeed! Are you running the latest version?");
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
 
@@ -66,6 +87,8 @@ public class NoSeed extends JavaPlugin {
         } else {
             player = null;
         }
+
+        boolean changed = false;
        
         // Set
         if (args.length > 0) {
@@ -93,6 +116,8 @@ public class NoSeed extends JavaPlugin {
                     sender.sendMessage("Failed to set: " + e.getMessage());
                 }
             }
+
+            changed = true;
         }
 
         if (player != null && !player.hasPermission("noseed.get")) {
@@ -116,6 +141,10 @@ public class NoSeed extends JavaPlugin {
 
         saveConfig();
 
+        if (changed) {
+            sender.sendMessage("Relog to view the changes");
+        }
+
         return true;
     }
 
@@ -132,6 +161,8 @@ public class NoSeed extends JavaPlugin {
 
     public static void premain(String args, Instrumentation inst) {
         bytecodeMap = new HashMap<String, byte[]>();
+
+        log("Initializing");
 
         InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("Packet1Login.class.noseed");
         int LENGTH = 2705;
