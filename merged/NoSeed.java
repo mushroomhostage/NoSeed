@@ -108,7 +108,12 @@ public class NoSeed extends JavaPlugin {
                     sender.sendMessage("Failed to toggle: " + e.getMessage());
                 }
             } else {
-                long newSeed = Long.parseLong(args[0]);
+                long newSeed;
+                try { 
+                    newSeed = Long.parseLong(args[0]);
+                } catch (NumberFormatException e) {
+                    newSeed = (long)args[0].hashCode();
+                }
 
                 try {
                     fakeSeedField.setLong(null, newSeed);
