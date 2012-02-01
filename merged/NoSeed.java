@@ -29,7 +29,7 @@ public class NoSeed extends JavaPlugin {
             lastRealSeedField = net.minecraft.server.Packet1Login.class.getDeclaredField("lastRealSeed");
             forceFlatField = net.minecraft.server.Packet1Login.class.getDeclaredField("forceFlat");
         } catch (Exception e) {
-            throw new IllegalArgumentException("NoSeed is not properly installed! Are you running CraftBukkit under ModInstrument?" + e.getMessage());
+            throw new IllegalArgumentException("NoSeed is not properly installed! Are you running CraftBukkit with -javaagent:plugins/NoSeed.jar?" + e.getMessage());
         }
         fakeSeedField.setAccessible(true);
         lastRealSeedField.setAccessible(true);
@@ -117,6 +117,56 @@ public class NoSeed extends JavaPlugin {
         saveConfig();
 
         return true;
+    }
+
+
+    // Instrumentation loader
+
+    // Map of classes, by /-separated name, to their bytecode
+    static Map<String, byte[]> bytecodeMap;
+
+    public static void log(String message) {
+        System.out.println("[NoSeed] " + message);
+    }
+
+
+    public static void premain(String args, Instrumentation inst) {
+        bytecodeMap = new HashMap<String, byte[]>();
+
+        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("Packet1Login.class.noseed");
+        int LENGTH = 2705;
+        byte[] data = new byte[LENGTH];
+        try {
+            int read = stream.read(data, 0, LENGTH);
+            if (read != LENGTH) {
+                log("Failed to read class file! Read "+read+" bytes, expected "+LENGTH);
+                System.exit(-1);
+            }
+        } catch (IOException e) {
+            log("Failed to read class file! Exception: " + e.getMessage());
+        }
+
+        bytecodeMap.put("net/minecraft/server/Packet1Login", data);
+
+        log("Adding transformer");
+
+        inst.addTransformer(new NoSeedTransformer()); 
+        // And so it begins!
+        // From now on, all classes loaded will pass through the transformer
+    }
+}
+
+// Replace classes
+class NoSeedTransformer implements ClassFileTransformer {
+    public byte[] transform(ClassLoader loader, String className, Class redefininingClass, ProtectionDomain domain, byte[] bytes) {
+
+        if (NoSeed.bytecodeMap.containsKey(className)) {
+            NoSeed.log("Transforming " + className);
+            return NoSeed.bytecodeMap.get(className);
+        } else {
+            //NoSeed.log("Pass-thru " + className);
+            return bytes;
+        }
     }
 }
 
