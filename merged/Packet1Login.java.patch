@@ -1,0 +1,36 @@
+--- Packet1Login.java.orig	2012-01-31 20:35:49.000000000 -0800
++++ Packet1Login.java	2012-01-30 23:13:31.000000000 -0800
+@@ -15,6 +15,10 @@
+     public byte g;
+     public byte h;
+     public byte i;
++    //XXX[NoSeed]
++    public static long fakeSeed = 42;
++    public static long lastRealSeed = -1;
++    public static boolean forceFlat = false;
+ 
+     public Packet1Login() {}
+ 
+@@ -52,12 +56,20 @@
+     public void a(DataOutputStream dataoutputstream) throws IOException { // CraftBukkit
+         dataoutputstream.writeInt(this.a);
+         a(this.name, dataoutputstream);
+-        dataoutputstream.writeLong(this.c);
++        //XXX[NoSeed]
++        //dataoutputstream.writeLong(this.c);
++        lastRealSeed = this.c;
++        dataoutputstream.writeLong(fakeSeed);
++
++        //XXX[NoSeed]
++        /*
+         if (this.d == null) {
+             a("", dataoutputstream);
+         } else {
+             a(this.d.name(), dataoutputstream);
+-        }
++        }*/
++        a(forceFlat ? "FLAT" : (this.d != null ? this.d.name() : ""), dataoutputstream);
++
+ 
+         dataoutputstream.writeInt(this.e);
+         dataoutputstream.writeByte(this.f);
