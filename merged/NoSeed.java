@@ -178,9 +178,17 @@ public class NoSeed extends JavaPlugin {
         InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
         byte[] data = new byte[length];
         try {
-            int read = stream.read(data, 0, length);
-            if (read != length) {
-                log("Failed to read class file ("+name+")! Read "+read+" bytes, expected "+length);
+            int at = 0;
+            int n;
+            do {
+                n = stream.read(data, at, length - at);
+
+                if (n > 0) {
+                    at += n;
+                }
+            } while(n > 0);
+            if (at != length) {
+                log("Failed to read class file ("+name+")! Read "+at+" bytes, expected "+length);
                 System.exit(-1);
             }
         } catch (IOException e) {
