@@ -97,7 +97,7 @@ public class NoSeed extends JavaPlugin {
                 return true;
             }
 
-            if (args[0].equalsIgnoreCase("flat")) {
+            if (args[0].equals("flat")) {   // if you really want seed 'flat', use 3145593
                 try {
                     boolean forceFlat = forceFlatField.getBoolean(null);
                     forceFlat = !forceFlat;
