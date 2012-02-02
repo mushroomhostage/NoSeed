@@ -8,8 +8,8 @@ X-ray at your leisure, loaded into [AMIDST](http://www.minecraftforum.net/topic/
 to quickly find strongholds and villages, or other tools to gain an unfair advantage
 against other players. 
 
-NoSeed hides the true seed from the F3 screen, replacing it with a random value having
-no relation to the actual number. 
+NoSeed hides the true level seed from the F3 screen, replacing it with a random value having
+no relation to the actual seed. An effective anti-cheat measure.
 
 
 Features:
