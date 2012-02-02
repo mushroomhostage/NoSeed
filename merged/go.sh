@@ -6,5 +6,5 @@ mv *.class me/exphc/NoSeed
 cp ../Packet1Login.class Packet1Login.class.noseed
 cp ../ServerConfigurationManager.class ServerConfigurationManager.class.noseed
 cp ../*.patch .
-jar cvMf NoSeed.jar me/ *.yml *.java META-INF Packet1Login.class.noseed ServerConfigurationManager.class.noseed README ChangeLog *.patch
+jar cvMf NoSeed.jar me/ *.yml *.java META-INF Packet1Login.class.noseed ServerConfigurationManager.class.noseed README.md ChangeLog *.patch
 cp NoSeed.jar ../../plugins/

@@ -41,7 +41,7 @@ of the real world seed. If desired, you can change the fake seed to your liking,
 ## Commands
 /seed: View the fake seed, and the last real seed replaced. Requires noseed.get permission.
 
-/seed [number]: Change the fake seed. Requires noseed.set permission.
+/seed [new-seed]: Change the fake seed, given either a number or word. Requires noseed.set permission.
 
 /seed flat: Toggle between forcing Superflat and using the existing world type. Requires noseed.set permission.
 

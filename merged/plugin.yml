@@ -1,6 +1,6 @@
 name: NoSeed
 main: me.exphc.NoSeed.NoSeed
-version: 0.3
+version: 0.4
 commands:
     seed:
         description: Change or view fake seed
