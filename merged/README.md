@@ -1,5 +1,3 @@
-NoSeed - hide your map seed!
-
 Ever want to hide the map seed? 
 
 Easily visible by opening the F3 debug screen, this number can
@@ -22,6 +20,9 @@ Features:
 * (Misfeature) Biome inaccuracies (see limitations below)
 
 ## Installation
+***Important***: NoSeed has not yet been updated for 1.1-R4. Only use with 1.1-R3 at this time.
+
+
 To use NoSeed, you must add the *-javaagent:plugins/NoSeed.jar* command-line flag to CraftBukkit, as the very first argument. For example:
 
 >java -javaagent:plugins/NoSeed.jar -mx4G -jar craftbukkit-1.1-R3.jar
@@ -41,7 +42,7 @@ of the real world seed. If desired, you can change the fake seed to your liking,
 ## Commands
 /seed: View the fake seed, and the last real seed replaced. Requires noseed.get permission.
 
-/seed [new-seed]: Change the fake seed, given either a number or word. Requires noseed.set permission.
+/seed [number]: Change the fake seed. Requires noseed.set permission.
 
 /seed flat: Toggle between forcing Superflat and using the existing world type. Requires noseed.set permission.
 
@@ -84,5 +85,6 @@ seed for ore (etc.) generation, leaving biomes intact. NoSeed in contrast does n
 generation, but rewrites the login packet to send a fake seed to the client, at the expense of
 accurate biome colors.
 
-Custom world generators are another alternative.
+*News 2012/02/10*: "Biome data will be saved with the chunks in the new world format. " - [_jeb](https://twitter.com/#!/jeb_/status/167918937474994176). This would potentially allow the biome problem with NoSeed to be solved.
 
+***[Fork me on GitHub](https://github.com/mushroomhostage/NoSeed)***
