@@ -1,3 +1,11 @@
+*** As of Minecraft 1.2, Mojang removed the map seed from SMP! ***
+
+*** It is no longer present in the [0x01 Login](http://wiki.vg/Protocol#Login_Request_.280x01.29) and [0x09 Respawn](http://wiki.vg/Protocol#Respawn_.280x09.29) packets, therefore the offline seed attack which NoSeed protected against in 1.1 is no longer possible. ***
+
+*** The cheat protection NoSeed provided is now part of the design of vanilla Minecraft, thanks to the new Anvil chunk format. NoSeed is now obsolete as of Minecraft 1.2.***
+
+----
+
 Ever want to hide the map seed? 
 
 Easily visible by opening the F3 debug screen, this number can
